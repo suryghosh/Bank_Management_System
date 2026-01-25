@@ -1,0 +1,158 @@
+
+
+{% extends 'myapp/main.html' %}
+{%load custom_filters%}
+
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-10 offset-1">
+            <input type="text" id="transactionFilter" class="form-control" placeholder="Search loan details..." style="width:21rem;">
+            <br>
+                <table id="transactionTable"class="table table-bordered border-light-dark" style="min-width:66rem;">
+                        <thead>
+                            <tr>
+                                <th>Loan details</th>
+                                <th>Next Payment details</th>
+                                <th>Status</th>
+                                <th>action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for i in details%}
+                            <div class="flex flex-column">
+                            <tr>
+                                <td>
+                                    Reference:<h6>{{i.loan_refno}}</h6>
+                                    Loan type: <h6>{{i.loan_type}}</h6>
+                                    Plan: <h6>{{i.plan}}</h6>
+                                    Amount: <h6>{{i.amount}}</h6>
+                                    Total payable amount: <h6>{{i.tp_amount}}</h6>
+                                    date applied: <h6>{{i.date_applied}}</h6>
+                                    {% if i.date_approved != None %}
+                                        date approved: <h6>{{i.date_approved}}</h6>
+                                    {%endif%}
+                                    {% if i.date_released != None %}
+                                        date released: <h6>{{i.date_released}}</h6>
+                                    {%endif%}
+                                    {% if i.date_rejected != None %}
+                                        date rejected: <h6>{{i.date_rejected}}</h6>
+                                    {%endif%}
+
+                                </td>
+                            </div>
+                            <div class="flex flex-column">
+                                <td>
+                                    {% if i.due_date != None%}
+                                        date:<h6>{{i.due_date}}</h6>
+                                    {%endif%}
+                                    {% if i.m_amount != None%}
+                                        Monthly amount:<h6>{{i.m_amount}}</h6>
+                                    {%endif%}
+                                    {% if i.penalty != None%}
+                                        penalty:<h6>{{i.penalty}}</h6>
+                                    {%endif%}
+                                    {% if i.pay_amount != None%}
+                                        payable amount:<h6>{{i.pay_amount}}</h6>
+                                    {%endif%}
+                                    {%if i.loan_status == 'approved' or i.loan_status == 'approved overdue'%}
+                                        Remaining due payments:<h6>{{i.count}}</h6>
+                                    {%endif%}
+                                </td>
+                            </div>
+
+                                <td class="d-flex justify-content-center align-items-center">
+                                    {% if i.loan_status == 'approved'%}
+                                        <span class="badge text-bg-success">approved</span>
+                                    {%endif%}
+                                    {% if i.loan_status == 'approved overdue' %}
+                                        <span class="badge text-bg-success">date_approved</span>
+                                        <span class="badge text-bg-danger">overdue</span>
+                                    {%endif%}
+                                    {%if i.loan_status == 'pending'%}
+                                        <span class="badge text-bg-warning">{{i.loan_status}}</span>
+                                    {%endif%}
+                                    {%if i.loan_status == 'released'%}
+                                        <span class="badge text-bg-primary">{{i.loan_status}}</span>
+                                    {%endif%}
+                                    {%if i.loan_status == 'rejected'%}
+                                        <span class="badge text-bg-danger">{{i.loan_status}}</span>
+                                    {%endif%}
+                                </td>
+
+                                
+                                <td>
+                                    <div class="d-flex justify-content-center align-items-center w-100 h-100">
+                                        <form method="POST" action="pay_loan/{{i.loan_refno}}/{{i.account.account_number}}">
+                                            {% if i.loan_status == 'approved' or i.loan_status == 'approved overdue'%}
+                                                {%csrf_token%}
+                                                <button class="btn btn-primary me-3">pay</button>
+                                            {%endif%}
+                                        </form>
+                                        
+                                        
+                                    </div>
+                                    
+                                </td>
+                                
+                               
+
+                            </tr>
+                            
+                        {%endfor%}
+                            
+                        </tbody>
+                    </table>
+
+                    
+                
+        </div>
+    </div>
+</div>
+
+{%if transaction == 'failed' %}
+    <script>
+        alert("Transaction failed due to insufficient funds in savings account");
+    </script>
+{%endif%}
+
+<script>
+    document.getElementById('transactionFilter').addEventListener('keyup', function() {
+        let filterValue = this.value.toLowerCase();
+        let filterTerms = filterValue.split(" "); // Split the search input by spaces to get multiple terms
+        let rows = document.querySelectorAll('#transactionTable tbody tr');
+    
+        rows.forEach(row => {
+            // Assume the row should be displayed
+            let displayRow = true;
+    
+            // Loop over each search term
+            filterTerms.forEach(term => {
+                let rowText = row.textContent.toLowerCase();
+    
+                // For every term, check if it matches any part of the row content
+                if (rowText.indexOf(term) === -1) {
+                    displayRow = false; // If a term doesn't match, don't display the row
+                }
+            });
+    
+            // Show or hide the row based on whether all terms matched
+            if (displayRow) {
+                row.style.display = ''; // Show the row
+            } else {
+                row.style.display = 'none'; // Hide the row
+            }
+        });
+    });
+    
+</script>
+
+
+
+
+{%endblock%}
+
+
+
+

@@ -1,0 +1,227 @@
+{% extends 'myapp/main.html' %}
+{% load custom_filters %}
+
+{% block content %}
+<style>
+    .transaction-container {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 15px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+        transition: all 0.3s ease;
+    }
+
+    .search-box {
+        position: relative;
+        margin-bottom: 2rem;
+    }
+
+    .search-box input {
+        padding: 1rem 1.5rem;
+        border-radius: 30px;
+        border: 2px solid #e0e0e0;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .search-box input:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+
+    .search-box::after {
+        content: "🔍";
+        position: absolute;
+        right: 1.5rem;
+        top: 50%;
+        transform: translateY(-50%);
+        opacity: 0.5;
+    }
+
+    .transaction-table {
+        border-radius: 10px;
+        overflow: hidden;
+        border-collapse: separate;
+        border-spacing: 0;
+        width: 100%;
+    }
+
+    .transaction-table thead {
+        background: linear-gradient(45deg, #1a237e, #283593);
+        color: white;
+    }
+
+    .transaction-table th {
+        padding: 1.2rem 1rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        letter-spacing: 0.5px;
+        border: none;
+        transition: all 0.3s ease;
+    }
+
+    .transaction-table td {
+        padding: 1rem;
+        vertical-align: middle;
+        border-bottom: 1px solid #e0e0e0;
+        transition: all 0.3s ease;
+    }
+
+    .transaction-table tbody tr {
+        background: white;
+        transition: all 0.3s ease;
+    }
+
+    .transaction-table tbody tr:hover {
+        background: #f8f9fa;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .badge {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .badge.text-bg-success {
+        background: linear-gradient(45deg, #43a047, #66bb6a);
+    }
+
+    .badge.text-bg-danger {
+        background: linear-gradient(45deg, #e53935, #ef5350);
+    }
+
+    .account-number {
+        font-weight: 500;
+        color: #2196f3;
+    }
+
+    .date-column {
+        color: #616161;
+        font-size: 0.9rem;
+    }
+
+    /* Animation for rows appearing/disappearing */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .transaction-table tbody tr {
+        animation: fadeIn 0.3s ease-out;
+    }
+
+    /* Empty state styling */
+    .no-results {
+        text-align: center;
+        padding: 2rem;
+        color: #757575;
+        font-style: italic;
+        display: none;
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+            <div class="transaction-container">
+                <div class="search-box">
+                    <input 
+                        type="text" 
+                        id="transactionFilter" 
+                        class="form-control" 
+                        placeholder="Search transactions by any field..."
+                    >
+                </div>
+
+                <table id="transactionTable" class="table transaction-table">
+                    <thead>
+                        <tr>
+                            <th>Transaction From</th>
+                            <th>Transaction To</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Details</th>
+                            <th>Account Types</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for i in com_trans %}
+                        {% with accountNumber=i.transaction_from.account_number %}
+                        <tr>
+                            <td>
+                                <span class="account-number">{{ map|get_item:accountNumber }}</span>
+                            </td>
+                            <td>
+                                {% if i.transaction_to.account_number %}
+                                    <span class="account-number">
+                                        {{ map|get_item:i.transaction_to.account_number|default:'Null' }}
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td class="date-column">{{ i.transaction_date }}</td>
+                            {% if i.transaction_type == 'success' %}
+                                <td><span class="badge text-bg-success">{{ i.transaction_type }}</span></td>
+                            {% else %}
+                                <td><span class="badge text-bg-danger">{{ i.transaction_type }}</span></td>
+                            {% endif %}
+                            <td>{{ i.transaction_details }}</td>
+                            <td>{{ i.types }}</td>
+                        </tr>
+                        {% endwith %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <div class="no-results">
+                    No transactions match your search criteria
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('transactionFilter').addEventListener('keyup', function() {
+    let filterValue = this.value.toLowerCase();
+    let filterTerms = filterValue.split(" ");
+    let rows = document.querySelectorAll('#transactionTable tbody tr');
+    let noResults = document.querySelector('.no-results');
+    let visibleRows = 0;
+    
+    rows.forEach(row => {
+        row.style.animation = 'none';
+        row.offsetHeight; // Trigger reflow
+        
+        let displayRow = true;
+        filterTerms.forEach(term => {
+            if (term.trim() !== '') {
+                let rowText = row.textContent.toLowerCase();
+                if (rowText.indexOf(term) === -1) {
+                    displayRow = false;
+                }
+            }
+        });
+        
+        if (displayRow) {
+            row.style.display = '';
+            row.style.animation = 'fadeIn 0.3s ease-out forwards';
+            visibleRows++;
+        } else {
+            row.style.display = 'none';
+        }
+    });
+    
+    // Show/hide no results message
+    noResults.style.display = visibleRows === 0 ? 'block' : 'none';
+});
+
+// Add smooth scroll to search box when filtering
+document.getElementById('transactionFilter').addEventListener('input', function() {
+    const table = document.getElementById('transactionTable');
+    table.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+</script>
+{% endblock %}

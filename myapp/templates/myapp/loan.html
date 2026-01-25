@@ -1,0 +1,96 @@
+{% extends 'myapp/main.html' %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="col-md-8 offset-2">
+            <div class="card mt-5">
+                <div class="card-header">
+                    <h2>Apply for Loan</h2>
+                </div>
+                <form method="post">
+                    {% csrf_token %}
+                <div class="card-body">
+                    <div class="row">
+                    <div class="col-md-5">
+                        <div class="row ps-3 pt-3 ">
+                            <ul>
+                                <li>Name:{{customer.name}}</li>
+                                <li>Account-no:{{customer.account.account_number}}</li>
+                            </ul>
+                        </div>
+                        <div class="row pt-3">
+                            <div class="form-group">
+                                <label for="plan">Plan</label>
+                                <select class="form-control" id="plan" name="plan">
+                                    <option value="" disabled selected>Select a plan</option>
+                                    <option>1-month/s[10%,1]</option>
+                                    <option>36-month/s[8%,3]</option>
+                                    <option>12-month/s[9%,1]</option>
+                                    <option>24-month/s[8%,2]</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row pt-3">
+                            <label for="exampleText">Purpose</label>
+                            <form>
+                                <textarea id="exampleText" name="text" rows="8" cols="30" placeholder="Type something..."></textarea>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-md-5 offset-1">
+                        <div class="row pt-3">
+                            <div class="form-group">
+                                <label for="loanType">Loan Type</label>
+                                <select class="form-control" id="loanType" name="loan_type">
+                                    <option value="" disabled selected>Select a loan</option>
+                                    <option>Personal</option>
+                                    <option>Home</option>
+                                    <option>Car</option>
+                                    <option>Business</option>
+                                    <option>Education</option>
+                                </select>
+                            
+                            </div>
+                        </div>
+                        <div class="row pt-3">
+                            <label for="amount">Enter amount</label>
+                            <div class="form-group">
+                                <input type="text" class="form-control" name="loan_amount" id="deposit" placeholder="Enter amount here" title="Enter appropriate amount" pattern="^[0-9]+(\.[0-9]{1,2})?$"required><br>
+                            </div>
+                        </div>
+                        <div class="row pt-3">
+                            <div class="col d-flex justify-content-center">
+                                <button type="submit" class="btn btn-success me-3">Submit</button>
+                                <button type="reset" class="btn btn-secondary me-3">Reset</button>
+                            </div>
+                        </div>
+                    
+                    </div>
+                </div>
+                </div>
+                </form>
+            </div>
+        </div>
+       
+    </div>
+
+{%if transaction == 'success'%}
+    <script>
+        alert("Loan has been approved successfully");
+    </script>
+
+{%elif transaction == 'pending'%}
+    <script>
+        alert("Loan is in pending status wait for your approval");
+    </script>
+
+{%elif transaction == 'failed'%}
+    <script>
+        alert("Loan has been rejected because your credit score is low or u have applied for more than 5 loans pls clear some of your loans or delete it");
+    </script>
+
+{%endif%}
+
+
+
+{%endblock%}

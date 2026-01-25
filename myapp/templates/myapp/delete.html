@@ -1,0 +1,29 @@
+
+
+{% extends 'myapp/main.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-5 offset-3">
+            <div class="card border-warning mb-3 me-4 mt-5 shadow-lg" style="min-width: 40rem;">
+                <div class="card-header bg-transparent border-warning" style="font-weight:600;">Deleting account</div>
+                <div class="card-body text-dark">
+                    <h2 class='text-center'>Press delete to delete your both accounts u will lose all your credentials along with it and would be redirected to home page</h2>
+                <form method="post">
+                    {% csrf_token %}
+                   <input class="btn btn-success" type="submit" value="delete" style="margin-left:16rem;">
+                </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{%endblock%}
+
+
+
+

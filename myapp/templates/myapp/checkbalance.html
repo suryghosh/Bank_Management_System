@@ -1,0 +1,76 @@
+{% extends 'myapp/main.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row mt-5 justify-content-center">
+        <!-- Account 1 Details -->
+        <div class="col-12 col-md-8 mt-4">
+            <div class="account-details mb-5 p-4 shadow-lg text-white" style="border-radius: 15px; background: linear-gradient(135deg, #1c1c1c, #333);">
+                <h4 class="text-center pb-2" style="font-family: 'Merriweather', serif;">Account Details</h4>
+                <ul class="list-unstyled">
+                    <li><strong>Name:</strong> {{ customer.name }}</li>
+                    <li><strong>Account Number:</strong> {{ customer.account.account_number }}</li>
+                    <li><strong>Type:</strong> {{ account_current.account_type }}</li>
+                    <li><strong>Balance:</strong> Rs.{{ account_current.balance }}</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Account 2 Details -->
+        <div class="col-12 col-md-8 mt-4">
+            <div class="account-details mb-5 p-4 shadow-lg text-white" style="border-radius: 15px; background: linear-gradient(135deg, #1c1c1c, #333);">
+                <h4 class="text-center pb-2" style="font-family: 'Merriweather', serif;">Account Details</h4>
+                <ul class="list-unstyled">
+                    <li><strong>Name:</strong> {{ customer.name }}</li>
+                    <li><strong>Account Number:</strong> {{ customer.account.account_number }}</li>
+                    <li><strong>Type:</strong> {{ account_savings.account_type }}</li>
+                    <li><strong>Balance:</strong> Rs.{{ account_savings.balance }}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Adding Custom CSS to Style and Animate -->
+<style>
+    body {
+        background-color: white; /* Light background for the whole page */
+        color: #f5f5f5; /* Light text for readability */
+    }
+    
+    .account-details {
+        transition: transform 0.3s ease, background 0.3s ease;
+        cursor: pointer;
+    }
+
+    .account-details:hover {
+        transform: translateY(-10px);
+        background: linear-gradient(135deg, #444, #666); /* A lighter gradient when hovered */
+    }
+
+    ul li {
+        padding: 8px 0;
+        font-size: 1.2rem;
+        font-family: 'Merriweather', serif; /* Classic font */
+    }
+
+    strong {
+        font-family: 'Roboto', sans-serif;
+        font-weight: 600;
+        color: #ffcc00;
+    }
+
+    h4 {
+        font-size: 1.8rem;
+        letter-spacing: 1px;
+        font-weight: 700;
+        color: #ffcc00;
+    }
+
+    /* Ensure even spacing between sections */
+    .row {
+        margin-bottom: 2rem;
+    }
+</style>
+
+{% endblock %}

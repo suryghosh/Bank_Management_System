@@ -1,0 +1,89 @@
+{% extends 'myapp/main.html' %}
+
+
+
+{% block content %}
+<style>
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+
+    .transfer-form-container {
+        border: 2px solid #ffc107;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    }
+
+    .form-control:hover {
+        background-color: #f1f1f1;
+    }
+
+    .btn-success:hover {
+        background-color: #28a745;
+        transform: scale(1.1);
+        transition: transform 0.2s ease-in-out;
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-5 offset-2">
+            <div class="transfer-form-container" style="min-width: 50rem; animation: fadeIn 1.5s;">
+                <div class="transfer-header bg-transparent" style="font-weight:600; border-bottom: 2px solid #ffc107;">
+                    Amount Transfer
+                </div>
+                <div class="transfer-body text-dark">
+                    <h2 class='text-center'>Please enter your amount you want to transfer</h2>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group mt-5">
+                            <ul class="list-unstyled">
+                                <li><h6>Amount transferred from account name: {{customer.name}}</h6></li>  
+                                <li>Account-number: {{customer.account.account_number}}</li>
+                            </ul>
+                            <label for="accounts">Select from which account you want to transfer money</label>
+                            <select id="account_type_from" name="type_from" class="form-control mt-2" style="transition: background-color 0.5s ease;">
+                                <option value="current">current</option>
+                                <option value="savings">savings</option>
+                            </select>
+                            <br>
+                            <input type="text" class="form-control" name="account_no" id="account_no" placeholder="Enter account number to transfer money to" required>
+                            <br>
+                            <label for="accounts">Select to which account you want to transfer money</label>
+                            <select id="account_type_to" name="type_to" class="form-control mt-2" style="transition: background-color 0.5s ease;">
+                                <option value="current">current</option>
+                                <option value="savings">savings</option>
+                            </select>
+                            <br>
+                            <input type="text" class="form-control" name="transact" id="transact" placeholder="Enter amount here" title="Enter appropriate amount" pattern="^[0-9]+(\.[0-9]{1,2})?$" required>
+                        </div>
+                        <input class="btn btn-success mt-3" type="submit" value="Transfer" style="margin-left:20rem;">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Transaction Feedback -->
+{% if transaction == 'pass' %}
+    <script>alert('Amount successfully transferred from {{customer.name}} to {{customer_to.name}}');</script>
+{% elif transaction == 'same' %}
+    <script>alert('Invalid mode of transaction');</script>
+{% elif transaction == 'noAccountAvail' %}
+    <script>alert('No such account exists to which transaction is done');</script>
+{% elif transaction == 'failed' %}
+    <script>alert('Transaction failed due to insufficient funds');</script>
+{% endif %}
+
+{% endblock %}
+
+<!-- Add animations -->

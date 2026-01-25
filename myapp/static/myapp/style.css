@@ -1,0 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+*{
+    margin: 0;
+    padding: 0;
+}
+
+.nav-item.dropdown:hover {
+    background-color: rgba(0, 0, 0, 0.1); /* Decrease opacity to 0.2 */
+    transition: background-color 0.3s ease; /* Smooth transition */
+}
+
+.dropdown-menu {
+    transition: background-color 0.3s ease;
+}
+
+.nav-item1 a:hover{
+    background-color: #ffcc00;
+}
+
+.container{
+    display: flex;
+    padding-left: 0px;
+    margin-left: 0px;
+    padding-right: 0px;
+    margin-right: 0px;
+    
+}
+.sidebar{
+    height: fit-content;
+}
+.container-footer{
+    margin: 0px;
+
+}
+
+
+  
+
+
+
+

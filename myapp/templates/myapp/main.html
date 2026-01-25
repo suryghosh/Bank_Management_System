@@ -1,0 +1,423 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IIITB Banking</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --sidebar-width: 240px;
+            --navbar-height: 60px;
+            --primary-color: #ffc107;
+            --dark-bg: #212529;
+
+            --font-primary: 'Space Grotesk', sans-serif;
+            --font-secondary: 'Poppins', sans-serif;
+            --font-headings: 'Outfit', sans-serif;
+            --font-special: 'DM Sans', sans-serif;
+        }
+        
+
+        body {
+            min-height: 100vh;
+            overflow-x: hidden;
+            font-family: var(--font-secondary);
+            font-weight: 400;
+            line-height: 1.6;
+            letter-spacing: 0.3px;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: calc(100vh - var(--navbar-height));
+            position: fixed;
+            top: var(--navbar-height);
+            left: 0;
+            z-index: 1000;
+        }
+
+        .sidebar a:hover{
+            background-color: white;
+            color:red;
+        }
+
+        .nav-link {
+            padding: 0.8rem 1rem;
+            color: rgb(253, 7, 7);
+            transition: all 0.3s;
+        }
+
+        .nav-link:hover {
+            background-color: rgb(255, 255, 255);
+            color: black;
+        }
+
+        .nav-link i {
+            width: 24px;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 20px;
+            min-height: calc(100vh - var(--navbar-height));
+            background-color: #f8f9fa;
+            transition: margin 0.3s ease-in-out;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+        }
+
+        /* Custom Card Styles */
+        .feature-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: none;
+            border-radius: 10px;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Navbar Custom Styles */
+        .navbar-brand {
+            font-weight: 600;
+            font-size: 1.5rem;
+        }
+
+        .dropdown-menu {
+            border: none;
+            box-shadow: 0 2px 15px rgba(181, 245, 4, 0);
+        }
+
+        .mega-dropdown-menu {
+            width: 100%;
+            padding: 1rem;
+        }
+
+        /* Footer Styles */
+        .footer {
+            background-color: var(--dark-bg);
+            color: white;
+            padding: 1.5rem 0;
+        }
+
+        /* User Profile Badge */
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            background-color: rgb(255, 255, 255);
+            color: black;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .user-profile:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+    </style>
+</head>
+<>
+    <!-- Navbar -->
+<div class="container mt-0" style="height: var(--navbar-height)">
+    <nav class="navbar navbar-expand-lg bg-warning fixed-top fixed" style="height: var(--navbar-height);">
+        <div class="container-fluid">
+            <!-- Toggle Sidebar Button -->
+            <button class="btn btn-link d-lg-none me-2" type="button" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <a class="navbar-brand" href="/main/{{customer.customer_id}}">IIITB</a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav mx-auto">
+                    <!-- Pay Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle me-4" href="#" data-bs-toggle="dropdown">
+                            Pay
+                        </a>
+                        <div class="dropdown-menu mega-dropdown-menu" style="width:440px;">
+                            <div class="container">
+                                <div class="row g-4">
+                                    <div class="col-lg-4">
+                                        <h6 class="fw-bold"><i class="fas fa-money-bill-transfer"></i> Money Transfer</h6>
+                                        <ul class="list-unstyled">
+                                            <li><a class="dropdown-item" href="/upi/{{customer.account.account_number}}">UPI</a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <h6 class="fw-bold"><i class="fas fa-credit-card"></i> Cards</h6>
+                                        <ul class="list-unstyled">
+                                            <li><a class="dropdown-item" href="#">Credit Cards</a></li>
+                                            <li><a class="dropdown-item" href="#">Debit Cards</a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <h6 class="fw-bold"><i class="fas fa-file-invoice-dollar"></i> Bills & Payments</h6>
+                                        <ul class="list-unstyled">
+                                            <li><a class="dropdown-item" href="/billpayments/{{customer.account.account_number}}">Bill Payments</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+
+                    <!-- Save Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle me-4" href="#" data-bs-toggle="dropdown">
+                            Save
+                        </a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="/deposit/{{customer.account.account_number}}">Deposit</a>
+                        </div>
+                    </li>
+
+                    <!-- Loans Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                            Loans
+                        </a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="/loan/{{customer.account.account_number}}">Apply for Loan</a>
+                        </div>
+                    </li>
+                </ul>
+
+                <!-- User Profile -->
+                <a href="/main/{{customer.customer_id}}" class="user-profile" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Bank-branch: {{customer.branch_connect}}">
+                    <i class="fas fa-user"></i>
+                    <span>{{customer.name}}</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+</div>
+
+
+    <!-- Sidebar -->
+    <div class="d-flex flex-column p-4">
+        <div class="container-fluid d-flex flex-grow-1 p-0">
+            <!-- Sidebar -->
+            <div class="sidebar bg-dark h-full">
+                <div class="d-flex flex-column h-100">
+                    <div class="flex-grow-1">
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link " href="/delete/{{customer.account.account_number}}">
+                                    <i class="fas fa-trash-alt"></i>
+                                    <span>Delete Account</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/update/{{customer.account.account_number}}">
+                                    <i class="fas fa-edit"></i>
+                                    <span>Update Account</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/checkbalance/{{customer.account.account_number}}">
+                                    <i class="fas fa-wallet"></i>
+                                    <span>Check Balance</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/transaction/{{customer.account.account_number}}">
+                                    <i class="fas fa-history"></i>
+                                    <span>Transaction History</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/loan_details/{{customer.account.account_number}}">
+                                    <i class="fas fa-money-bill-wave"></i>
+                                    <span>Loan Details</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Logout Section -->
+                    <div class="mt-auto">
+                        <hr class="border-light">
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link" href="/">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <span>Logout</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <main class="main-content flex-grow-1 p-4">
+                {% block content %}
+                    <div class="container">
+                        <h2 class="text-center">Welcome to IIIT-Bank</h2>
+                        <!-- Your content goes here -->
+                        <div class="row bg-grey h-[50px]" style="margin-top:3rem;">
+                            <div class="card border-warning mb-3 shadow-lg h-full" style="min-width: 40rem;">
+                                <div class="card-body text-white">
+                                    <div class="row h-auto">
+                                        <div class="col-md-4 bg-info border">
+                                            <h1 class="">Loan Score:</h1>
+                                            <h3 class="pt-4">{{score}}</h3>
+                                        </div>
+                                        <div class="col-md-2 bg-warning border">
+                                            <h2 class="">Loan pending:</h2>
+                                            <h4 class="pt-3">{{counts.count_pending}}</h4>
+                                        </div>
+                                        <div class="col-md-2 bg-danger border">
+                                            <h2 class="">Loan rejected:</h2>
+                                            <h4 class="pt-3">{{counts.count_rejected}}</h4>
+                                        </div>
+                                        <div class="col-md-2 bg-success border">
+                                            <h2 class="">Loan Approved:</h2>
+                                            <h4 class="pt-3">{{counts.count_approved}}</h4>
+                                        </div>
+                                        <div class="col-md-2 bg-success border">
+                                            <h2 class="">Loan released:</h2>
+                                            <h4 class="pt-3">{{counts.count_released}}</h4>
+                                        </div>
+                                </div>
+                                </div>
+                            </div>
+                                
+                            
+                            
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-12">
+                                <div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel">
+                                    <div class="carousel-inner">
+                                      <div class="carousel-item active" data-bs-interval="3000">
+                                        <img src="{% static 'myapp/photo-1.png' %}" class="d-block w-100" alt="photo-1">
+                                      </div>
+                                      <div class="carousel-item" data-bs-interval="3000">
+                                        <img src="{% static 'myapp/photo-3.png' %}" class="d-block w-100" alt="...">
+                                      </div>
+                                      <div class="carousel-item" data-bs-interval="3000">
+                                        <img src="{% static 'myapp/photo-4.png' %}" class="d-block w-100" alt="...">
+                                      </div>
+                                      <div class="carousel-item" data-bs-interval="3000">
+                                        <img src="{% static 'myapp/photo-5.png' %}" class="d-block w-100" alt="...">
+                                      </div>
+                                    </div>
+                                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="prev">
+                                      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                      <span class="visually-hidden">Previous</span>
+                                    </button>
+                                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="next">
+                                      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                      <span class="visually-hidden">Next</span>
+                                    </button>
+                                  </div>
+                            </div>                            
+                        </div>
+                        
+                    </div>
+                {% endblock %}
+            </main>
+        
+        </div>
+    </div>
+
+        <!-- Footer -->
+        
+        
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom Scripts -->
+    <script>
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+
+        // Toggle Sidebar
+        function toggleSidebar() {
+            document.querySelector('.sidebar').classList.toggle('show');
+        }
+
+        // Handle Success Messages
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('success')) {
+            const toast = new bootstrap.Toast(document.createElement('div'));
+            toast.show();
+            
+            // Create toast notification
+            const toastContainer = document.createElement('div');
+            toastContainer.className = 'position-fixed bottom-0 end-0 p-3';
+            toastContainer.style.zIndex = '11';
+            
+            toastContainer.innerHTML = `
+                <div class="toast show" role="alert">
+                    <div class="toast-header">
+                        <strong class="me-auto">Success</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+                    </div>
+                    <div class="toast-body">
+                        Amount deposited successfully!
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(toastContainer);
+            
+            // Remove toast after 3 seconds
+            setTimeout(() => {
+                toastContainer.remove();
+            }, 3000);
+        }
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(event) {
+            const sidebar = document.querySelector('.sidebar');
+            const toggleButton = document.querySelector('.btn-link');
+            
+            if (window.innerWidth < 992) {
+                if (!sidebar.contains(event.target) && !toggleButton.contains(event.target)) {
+                    sidebar.classList.remove('show');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

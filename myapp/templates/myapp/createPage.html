@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IIITB-Create-Account</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                        url('/api/placeholder/1920/1080') center/cover no-repeat fixed;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 4rem 0;
+        }
+
+        .content-wrapper {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-control {
+            border: 1px solid #ced4da;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+            border-color: #80bdff;
+        }
+
+        .custom-btn {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .custom-btn:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+            z-index: -1;
+        }
+
+        .custom-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .custom-btn:hover:after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        label {
+            color: #495057;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        select.form-control {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 offset-lg-2">
+                    <div class="content-wrapper">
+                        <h2 class="text-center mb-4">Create Your Account</h2>
+                        <form method="post" class="p-3">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <input type="text" class="form-control" name="name" id="name" 
+                                    placeholder="Enter name" title="Enter your name" required>
+
+                                <input type="text" class="form-control" name="phone_no" id="phone_no" 
+                                    pattern='\d{10}' placeholder="Enter phone number" 
+                                    title="Please enter 10 digit number">
+
+                                <input type="text" class="form-control" name="Aadhar_no" id="Aadhar_no" 
+                                    pattern="\d{12}" placeholder="Enter Aadhar number" 
+                                    title="Please enter 12 digit number">
+
+                                <div class="mb-3">
+                                    <label for="DOB" class="form-label">Date of Birth</label>
+                                    <input type="date" class="form-control" name="DOB" id="DOB" 
+                                        title="DOB is required" required>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="branch" class="form-label">Select Bank Branch</label>
+                                    <select id="branch" name="branch" class="form-control">
+                                        {% for branch in branches %}
+                                            <option value="{{ branch.branch_id }}">{{ branch.branch_name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <input type="password" class="form-control" name="password" id="password" 
+                                    pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$" 
+                                    placeholder="Password" 
+                                    title="Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 special character, and 1 number" 
+                                    required>
+
+                                <div class="text-center mt-4">
+                                    <button type="submit" class="btn btn-success btn-lg custom-btn px-5">
+                                        Create Account
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

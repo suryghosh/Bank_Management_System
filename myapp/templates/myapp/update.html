@@ -1,0 +1,99 @@
+{% extends 'myapp/main.html' %}
+{% block content %}
+<div class="container" style="width:1000px;">
+    <div class="row">
+        <div class="col-8 offset-2">
+            <h2 class="text-center">Please Change Your Credentials to Update Your Account</h2>
+            <form method="post" class="form-animated"> <!-- Added animation class -->
+                {% csrf_token %}
+                <div class="form-group mt-5">
+                    <!-- Name Field -->
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control animated-input" name="name" id="name" placeholder="{{ customer.name }}" title="Enter your name" required><br>
+
+                    <!-- Phone Number Field -->
+                    <label for="phone_no">Phone Number</label>
+                    <input type="text" class="form-control animated-input" name="phone_no" id="phone_no" pattern="\d{10}" placeholder="{{ customer.phone_no }}" title="Please enter a 10-digit number" required><br>
+
+                    <!-- Aadhar Number Field -->
+                    <label for="Aadhar_no">Aadhar Number</label>
+                    <input type="text" class="form-control animated-input" name="Aadhar_no" id="Aadhar_no" pattern="\d{12}" placeholder="{{ customer.Aadhar_no }}" title="Please enter a 12-digit Aadhar number" required><br>
+
+                    <!-- Bank Branch Selection -->
+                    <label for="branch">Select Your Bank Branch</label>
+                    <select id="branch" name="branch" class="form-control animated-input mt-2">
+                        <option value="" disabled selected>{{ customer.branch_connect.branch_name }}</option> <!-- Placeholder for current branch -->
+                        {% for branch in branches %}
+                            <option value="{{ branch.branch_id }}">{{ branch.branch_name }}</option>
+                        {% endfor %}
+                    </select><br>
+
+                    <!-- Password Field -->
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control animated-input" name="password" id="password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$" placeholder="{{customer.password}}" title="Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character, with a minimum length of 8 characters" required><br>
+                </div>
+
+                <!-- Submit Button with Animation -->
+                <input class="btn btn-success animated-button" type="submit" value="Update" style="margin-left:16rem;">
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Error and Success Messages -->
+{% if error == 'phone_num' %}
+    <script>
+        alert("Phone number already exists");
+    </script>
+{% elif error == 'aadhar_num' %}
+    <script>
+        alert("Aadhar number already exists");
+    </script>
+{% elif error == 'saved' %}
+    <script>
+        alert("Credentials updated successfully");
+    </script>
+{% endif %}
+
+<!-- Animations in CSS -->
+<style>
+    /* Fade-in Animation for the Form */
+    .form-animated {
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeInUp 0.8s forwards ease-in-out;
+    }
+
+    /* Input Field Animation */
+    .animated-input {
+        transition: all 0.3s ease-in-out;
+    }
+
+    .animated-input:focus {
+        border-color: #28a745; /* Success color */
+        box-shadow: 0 0 10px rgba(40, 167, 69, 0.3); /* Greenish glow on focus */
+    }
+
+    /* Button Animation */
+    .animated-button {
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .animated-button:hover {
+        background-color: #218838; /* Darker green */
+        transform: scale(1.05); /* Slightly enlarge the button on hover */
+    }
+
+    /* Keyframes for Form Animation */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+{% endblock %}

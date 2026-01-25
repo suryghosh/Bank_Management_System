@@ -1,0 +1,65 @@
+{% extends 'myapp/main.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-5 offset-2">
+            <div class="deposit-form-container ms-5" style="min-width: 40rem; animation: fadeIn 1.5s;">
+                <div class="deposit-header" style="font-weight:600; border-bottom: 2px solid #ffc107;">
+                    Deposit Amount
+                </div>
+                <div class="deposit-body text-dark">
+                    <h2 class='text-center'>Please enter the amount you want to deposit</h2>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group mt-5">
+                            <input type="text" class="form-control" name="deposit" id="deposit" placeholder="Enter amount here" title="Enter appropriate amount" pattern="^[0-9]+(\.[0-9]{1,2})?$" required>
+                        </div>
+                        <br>
+                        <label for="accounts">Select to which account you want to deposit</label>
+                        <select id="account_type" name="type" class="form-control mt-2" style="transition: background-color 0.5s ease;">
+                            <option value="current">Current</option>
+                            <option value="savings">Savings</option>
+                        </select>
+                        <br>
+                        <input class="btn btn-success" type="submit" value="Deposit" style="margin-left:16rem;">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+
+    .deposit-form-container {
+        border: 2px solid #ffc107;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    }
+
+    .form-control:hover {
+        background-color: #f1f1f1;
+    }
+
+    .btn-success:hover {
+        background-color: #28a745;
+        transform: scale(1.1);
+        transition: transform 0.2s ease-in-out;
+    }
+</style>
+
+{% endblock %}
+
+<!-- Add animations -->
+
