@@ -35,4 +35,5 @@ urlpatterns = [
    path('loan/<str:account_no>',views.loan_given,name='loan'),
    path('loan_details/<str:account_no>',views.loan_details_table,name='loan_details_table'),
    path('loan_details/pay_loan/<str:refno>/<str:account_no>',views.pay_loan,name='pay_loan'),
+   path('transaction/rollback/<str:transaction_id>/',views.rollback_transaction,name='rollback_transaction'),
 ]

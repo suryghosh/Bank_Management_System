@@ -84,7 +84,7 @@
                                 
                                 <td>
                                     <div class="d-flex justify-content-center align-items-center w-100 h-100">
-                                        <form method="POST" action="pay_loan/{{i.loan_refno}}/{{i.account.account_number}}">
+                                        <form method="POST" action="/loan_details/pay_loan/{{i.loan_refno}}/{{i.account.account_number}}">
                                             {% if i.loan_status == 'approved' or i.loan_status == 'approved overdue'%}
                                                 {%csrf_token%}
                                                 <button class="btn btn-primary me-3">pay</button>

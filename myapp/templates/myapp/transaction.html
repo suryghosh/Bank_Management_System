@@ -146,6 +146,7 @@
                             <th>Status</th>
                             <th>Details</th>
                             <th>Account Types</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -160,16 +161,38 @@
                                     <span class="account-number">
                                         {{ map|get_item:i.transaction_to.account_number|default:'Null' }}
                                     </span>
+                                {% else %}
+                                    <span class="text-muted">—</span>
                                 {% endif %}
                             </td>
                             <td class="date-column">{{ i.transaction_date }}</td>
                             {% if i.transaction_type == 'success' %}
                                 <td><span class="badge text-bg-success">{{ i.transaction_type }}</span></td>
+                            {% elif i.transaction_type == 'rolled_back' %}
+                                <td><span class="badge text-bg-warning">rolled back</span></td>
+                            {% elif i.transaction_type == 'reversed' %}
+                                <td><span class="badge text-bg-info">reversed</span></td>
                             {% else %}
                                 <td><span class="badge text-bg-danger">{{ i.transaction_type }}</span></td>
                             {% endif %}
                             <td>{{ i.transaction_details }}</td>
                             <td>{{ i.types }}</td>
+                            <td>
+                                {% if i.transaction_type == 'success' and i.transaction_from.account_number == customer.account.account_number %}
+                                <form method="post" action="{% url 'myapp:rollback_transaction' i.transaction_id %}" onsubmit="return confirm('Are you sure you want to rollback this transaction? Funds will be restored.');" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-outline-warning" title="Rollback transaction">
+                                        <i class="fas fa-undo"></i> Rollback
+                                    </button>
+                                </form>
+                                {% elif i.transaction_type == 'rolled_back' %}
+                                    <span class="badge text-bg-secondary"><i class="fas fa-check"></i> Reverted</span>
+                                {% elif i.transaction_type == 'reversed' %}
+                                    <span class="badge text-bg-info"><i class="fas fa-exchange-alt"></i> Reversal Entry</span>
+                                {% else %}
+                                    <span class="text-muted">—</span>
+                                {% endif %}
+                            </td>
                         </tr>
                         {% endwith %}
                     {% endfor %}
@@ -223,5 +246,20 @@ document.getElementById('transactionFilter').addEventListener('input', function(
     const table = document.getElementById('transactionTable');
     table.scrollIntoView({ behavior: 'smooth', block: 'start' });
 });
+
+// Handle rollback notifications
+const rollbackParams = new URLSearchParams(window.location.search);
+const rollbackStatus = rollbackParams.get('rollback_status');
+if (rollbackStatus === 'success') {
+    alert('Transaction successfully rolled back! Balances have been restored.');
+} else if (rollbackStatus === 'insufficient_receiver_funds') {
+    alert('Rollback failed: Destination account does not have sufficient funds to reverse this transaction.');
+} else if (rollbackStatus === 'insufficient_funds') {
+    alert('Rollback failed: Account does not have sufficient funds to reverse the deposit.');
+} else if (rollbackStatus === 'not_eligible') {
+    alert('This transaction is not eligible for rollback.');
+} else if (rollbackStatus === 'error') {
+    alert('An unexpected error occurred during rollback. All changes have been safely aborted.');
+}
 </script>
 {% endblock %}
